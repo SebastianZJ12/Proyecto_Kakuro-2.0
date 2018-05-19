@@ -28,7 +28,7 @@ def acerca_de(): #Funcion para desplegar el cuadro de "Acerca de".
     messagebox.showinfo("Acerca de:", "Proyecto no.2\nKakuro\nVersion Python 3.6.4\nFecha de creación:01-05-2018\nAutor: Sebastián Zamora Jiménez")
 
 def ayuda(): #Funcion para desplegar el Manual de Usuario.
-    os.startfile('Manual_de_Usuario_Kakuro_2018170723.pdf')
+    os.startfile('Manual_de_Usuario_Kakuro 2018170723.pdf')
 
 #Variables de la configuración.
 neurona=1 #Variable que indica el nivel de dificultad.
@@ -48,18 +48,7 @@ seg_timer=0
 seg_timer2=0
 tiempo_de_partida=0
 tiempo_jugado=0
-
-def neuronas_nivel(): #Función para seleccionar el nivel de dificultad.
-    """Función para seleccionar el nivel de dificultad"""
-    global nivel
-    global neurona
-    if neurona==1:
-        neurona+=1
-    elif neurona==2:
-        neurona+=1
-    elif neurona==3:
-        neurona=1
-    nivel.set(str(neurona)+" Neuronas")
+multinivel=False
 
 def configuracion(): #Función que despliega el menú para configurar la partida.
     config=Toplevel()
@@ -67,6 +56,189 @@ def configuracion(): #Función que despliega el menú para configurar la partida
     config.geometry("400x480+10+10")
     config.config(relief="ridge", bg="green", bd=10)
     config.resizable(0,0)
+
+    def neuronas_nivel(): #Función para seleccionar el nivel de dificultad.
+        """Función para seleccionar el nivel de dificultad"""
+        global nivel
+        global neurona
+        global multinivel
+        if neurona==1:
+            neurona+=1
+        elif neurona==2:
+            neurona+=1
+        elif neurona==3:
+            neurona+=1
+            nivel.set("Multinivel")
+            return
+        else:
+            neurona=1
+        nivel.set(str(neurona)+" Neuronas")
+
+    def activar_temporizador(): #Función que activa el temporizador.
+        """Función que activa el temporizador"""
+        global contatimer
+        global tiempo_juego
+        global timer
+        global horas_timer
+        global min_timer
+        global min_timer2
+        global seg_timer
+        global seg_timer2
+        if tiempo_juego=="No": #Verifica que la opción de Reloj esté desactivada.
+            contatimer+=1
+            if contatimer%2==0:
+                horas.config(state="normal", bg="orange")
+                minutos.config(state="normal", bg="orange")
+                minutos2.config(state="normal", bg="orange")
+                segundos.config(state="normal", bg="orange")
+                segundos2.config(state="normal", bg="orange")
+                timer="Si"
+                tiempo_juego="No"
+            else:
+                horas.config(state="disabled", bg="green")
+                minutos.config(state="disabled", bg="green")
+                minutos2.config(state="disabled", bg="green")
+                segundos.config(state="disabled", bg="green")
+                segundos2.config(state="disabled", bg="green")
+                timer="No"
+                tiempo_juego=="Si"
+                horas_timer=0
+                min_timer=0
+                min_timer2=0
+                seg_timer=0
+                seg_timer2=0
+                horas.config(text=horas_timer)
+                minutos.config(text=min_timer)
+                minutos2.config(text=min_timer2)
+                segundos.config(text=seg_timer)
+                segundos2.config(text=seg_timer2)
+                
+    def activar_reloj(): #Función para activar el Reloj en pantalla.
+        """Función para activar el Reloj en pantalla"""
+        global contareloj
+        global reloj
+        global tiempo_juego
+        global timer
+        global horas_timer
+        global min_timer
+        global min_timer2
+        global seg_timer
+        global seg_timer2
+        contareloj+=1
+        if contareloj%2==0:
+            tiempo_juego="No"
+            timer="Si"
+        else:
+            tiempo_juego="Si"
+            timer="No"
+            horas.config(state="disabled", bg="green")
+            minutos.config(state="disabled", bg="green")
+            minutos2.config(state="disabled", bg="green")
+            segundos.config(state="disabled", bg="green")
+            segundos2.config(state="disabled", bg="green")
+            horas_timer=0
+            min_timer=0
+            min_timer2=0
+            seg_timer=0
+            seg_timer2=0
+            horas.config(text=horas_timer)
+            minutos.config(text=min_timer)
+            minutos2.config(text=min_timer2)
+            segundos.config(text=seg_timer)
+            segundos2.config(text=seg_timer2)
+        reloj.set(tiempo_juego)
+
+    def definir_timer(x): #Función para determinar la cantidad de horas, minutos y segundos del timer.
+        global horas_timer
+        global min_timer
+        global seg_timer
+        global min_timer2
+        global seg_timer2
+        if x==1:
+            if horas_timer==0:
+                horas_timer=1
+            elif horas_timer==1:
+                horas_timer=2
+            else:
+                horas_timer=0
+            horas.config(text=horas_timer)
+        elif x==2:
+            if min_timer>=0:
+                min_timer+=1
+            if min_timer>5:
+                min_timer=0
+            minutos.config(text=min_timer)
+        elif x==3:
+            if min_timer2>=0:
+                min_timer2+=1
+            if min_timer2>9:
+                min_timer2=0
+            minutos2.config(text=min_timer2)
+        elif x==4:
+            if seg_timer>=0:
+                seg_timer+=1
+            if seg_timer>5:
+                seg_timer=0
+            segundos.config(text=seg_timer)
+        elif x==5:
+            if seg_timer2>=0:
+                seg_timer2+=1
+            if seg_timer2>9:
+                seg_timer2=0
+            segundos2.config(text=seg_timer2)
+
+    def segundos_totales(): #Convierte a segundos todas las horas, minutos y segundos del timer.
+        """Convierte a segundos todas las horas, minutos y segundos del timer"""
+        global horas_timer
+        global min_timer
+        global seg_timer
+        global min_timer2
+        global seg_timer2
+        global tiempo_de_partida
+        horas=horas_timer*3600
+        minutos=(min_timer*10+min_timer2)*60
+        segundos=seg_timer*10+seg_timer2
+        seg_totales=horas+minutos+segundos
+        tiempo_de_partida=seg_totales
+        return seg_totales
+
+    def guardar_config(): #Guarda la configuración en un archivo para posteriormente ser leída cuando se inicie la partida.
+        """Guarda la configuración en un archivo para posteriormente ser leída cuando se inicie la partida"""
+        global timer
+        global tiempo_juego
+        global neurona
+        nivel=str(neurona)
+        f=open("kakuro2018config.txt","w")
+        seg=segundos_totales()
+        if seg!=0:
+            seg=str(seg)
+            tiempo_juego="No"
+            if neurona==1:
+                lista_par=str(['1','Timer',seg])
+                f.write(lista_par)
+            elif neurona==2:
+                lista_par=str(['2','Timer',seg])
+                f.write(lista_par)
+            else:
+                lista_par=str(['3','Timer',seg])
+                f.write(lista_par)
+        else:
+            timer="No"
+            if tiempo_juego=="Si":
+                if neurona==1:
+                    f.write("['1','Si','0']")
+                elif neurona==2:
+                    f.write("['2','Si','0']")
+                else:
+                    f.write("['3','Si','0']")
+            else:
+                if neurona==1:
+                    f.write("['1','No','0']")
+                elif neurona==2:
+                    f.write("['2','No','0']")
+                else:
+                    f.write("['3','No','0']")
+        f.close()
 
     #Botones
     #Dificultad
@@ -118,6 +290,7 @@ juego_iniciado=False #Bandera que indica si el juego se inició.
 kakuro2=[] #Lista que recibe la matriz de juego del kakuro.
 lista_botones2=[] #Lista que recibe la lista de botones y etiquetas del tablero dinámico.
 jugadas=[] #Lista que guarda las jugadas. Se usa para borrar jugadas.
+recuperar_jugadas=[]
 contenido=() #Tupla que recibe el contenido de la partida.
 juego_anterior=[] #Lista que posee el juego anterior para no ser repetido si se inicia otro juego.
         
@@ -125,8 +298,12 @@ def leer_archivo(): #Función que lee las partidas de cada nivel según el grado
     """Función que lee las partidas de cada nivel según el grado de dificultad seleccionado"""
     global neurona
     global juego_anterior
+    global multinivel
     f=open("kakuro2018partidas.txt", "r")
     cont=0
+    if neurona==4:
+        multinivel=True
+        neurona=1
     if neurona==1:
         while cont!=1:
             contenido= f.readline()
@@ -410,6 +587,7 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
         global numero_seleccionado
         global terminado
         global nombre
+        global ultima_jugada
         if numero_seleccionado!="": #Verifica que se haya seleccionado un número
             esta=False
             bandera=True
@@ -517,7 +695,7 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
                                 suma=False
                                 break                
                 if suma==True: #Bandera que indica si la suma era menor o igual al valor de la clave
-                    jugadas+=[[i,j]] #Agrega la ubicación de la casilla a las jugadas
+                    jugadas+=[[i,j,numero_seleccionado]] #Agrega la ubicación de la casilla a las jugadas
                     lista_botones[i][j].configure(text=str(numero_seleccionado)) #Cambia el valor del botón
                     kakuro[i][j]=numero_seleccionado #Ingresa el número a la matriz del kakuro
                     kakuro2=kakuro[:] 
@@ -686,24 +864,51 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
         top_2.close()
         archivo_config.close()
 
-    def borrar_jugadas(): #Función que borra las jugadas anteriores
+    def deshacer_jugadas(): #Función que borra las jugadas anteriores
         """Función que borra las jugadas anteriores"""
         global lista_botones2
         global kakuro2
         global jugadas
+        global recuperar_jugadas
         global juego_iniciado
         if juego_iniciado==True:
             if len(jugadas)>=1: #Veirifica si hay jugadas por borrar
                 pygame.mixer.music.load("smb_kick.wav")
                 pygame.mixer.music.play()
-                fila_matriz,columna_matriz=jugadas[-1]
+                fila_matriz=jugadas[-1][0]
+                columna_matriz=jugadas[-1][1]
                 lista_botones[fila_matriz][columna_matriz].configure(text="")
                 kakuro[fila_matriz][columna_matriz]="#"
                 lista_botones2=lista_botones[:]
                 kakuro2=kakuro[:]
+                recuperar_jugadas+=[jugadas[-1]]
                 del jugadas[-1] #Borra la última jugada
             else:
                 messagebox.showinfo("AVISO", "¡No hay jugadas por borrar!")
+        else:
+            messagebox.showinfo("AVISO", "¡No se ha iniciado la partida!\nHaz click en el botón 'Iniciar Juego'")
+
+    def rehacer_jugadas(): #Función que rehace las jugadas anteriormente borradas
+        """Función que rehace las jugadas anteriormente borradas"""
+        global lista_botones2
+        global kakuro2
+        global jugadas
+        global recuperar_jugadas 
+        global juego_iniciado
+        if juego_iniciado==True:
+            if len(recuperar_jugadas)>=1: #Veirifica si hay jugadas por recuperar
+                pygame.mixer.music.load("mario-coin.mp3")
+                pygame.mixer.music.play()
+                fila_matriz=recuperar_jugadas[-1][0]
+                columna_matriz=recuperar_jugadas[-1][1]
+                lista_botones[fila_matriz][columna_matriz].configure(text=recuperar_jugadas[-1][2])
+                kakuro[fila_matriz][columna_matriz]=recuperar_jugadas[-1][2]
+                lista_botones2=lista_botones[:]
+                kakuro2=kakuro[:]
+                jugadas+=[recuperar_jugadas[-1]]
+                del recuperar_jugadas[-1] #Recupera la última jugada
+            else:
+                messagebox.showinfo("AVISO", "¡No hay jugadas por recuperar!")
         else:
             messagebox.showinfo("AVISO", "¡No se ha iniciado la partida!\nHaz click en el botón 'Iniciar Juego'")
 
@@ -983,21 +1188,24 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
     inicio_juego=Button(juego, width="8", height="2", text="Iniciar\nJuego", fg="black", bg="gold", font=('Bahnschrift SemiBold', 10), command=lambda: iniciar_partida())
     inicio_juego.grid(row=12, column=1)
 
-    #Borrar jugada
-    borrar_jugada=Button(juego, width="8", height="2", text="Borrar\nJugada", fg="black", bg="light blue", font=('Bahnschrift SemiBold', 10), command=lambda: borrar_jugadas())
-    borrar_jugada.grid(row=12, column=3)
+    #Deshacer jugada
+    deshacer_jugada=Button(juego, width="8", height="2", text="Deshacer\nJugada", fg="black", bg="light blue", font=('Bahnschrift SemiBold', 10), command=lambda: deshacer_jugadas())
+    deshacer_jugada.grid(row=12, column=3)
+
+    rehacer_jugada=Button(juego, width="8", height="2", text="Rehacer\nJugada", fg="black", bg="red", font=('Bahnschrift SemiBold', 10), command=lambda: rehacer_jugadas())
+    rehacer_jugada.grid(row=12, column=5)
 
     #Terminar juego
     terminar_juego=Button(juego, width="8", height="2", text="Terminar\nJuego", fg="black", bg="light green", font=('Bahnschrift SemiBold', 10), command=lambda: terminar_de_jugar())
-    terminar_juego.grid(row=12, column=5)
+    terminar_juego.grid(row=12, column=7)
 
     #Borrar juego
     borrar_juego=Button(juego, width="8", height="2", text="Borrar\nJuego", fg="black", bg="dark turquoise", font=('Bahnschrift SemiBold', 10), command=lambda: borrar_juegototal())
-    borrar_juego.grid(row=12, column=7)
+    borrar_juego.grid(row=12, column=9)
 
     #Top 10
     top10=Button(juego, width="8", height="2", text="Top\n10", fg="black", bg="white", font=('Bahnschrift SemiBold', 10), command=lambda: top_10())
-    top10.grid(row=12, column=9)
+    top10.grid(row=12, column=12)
 
     #Tiempo
     Label(juego, width="7", fg="black", bg="light grey", font=('Bahnschrift SemiBold', 10), text="Tiempo").grid(row=13, column=1, columnspan=3)
@@ -1028,14 +1236,13 @@ ventana_menu.config(width="690", height="690", bg="gold", relief="sunken", bd=10
 ventana_menu.pack()
 
 #Saludo Inicial
-saludo=Label(ventana_menu)
-saludo.config(font=("Gang of Three", 30), fg="black", bg="gold", text="Bienvenidos a Kakuro")
-saludo.place(x=130, y=10)
+saludo=Label(ventana_menu,font=("Gang of Three", 30), fg="black", bg="gold", text="Bienvenidos a Kakuro\n2.0").place(x=130, y=10)
+
 
 #Botones funcionales
 #Jugar
 botonjugar=Button(ventana_menu, width="12", text= "A darle!", font=("Gang of Three", 20), bg="red", fg="black", command=lambda: a_jugar())
-botonjugar.place(x=255, y=100)
+botonjugar.place(x=255, y=110)
 
 #Configurar
 botonconfig=Button(ventana_menu, width="16", text= "Configuración", font=("Gang of Three", 20), bg="silver", fg="black", command=lambda: configuracion())
