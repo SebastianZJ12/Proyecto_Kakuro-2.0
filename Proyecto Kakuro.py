@@ -306,7 +306,7 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
                             clave2+=str(i)
                     clave=str(clave)+clave2
                 else:
-                    clave=str(clave)+"\#"                
+                    clave=str(clave)+"\\#"                
                 kakuro[fila-1][columna-1]=clave
                 clave2=""
                 for x in clave:
@@ -380,24 +380,7 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
         global num_seleccionado
         global juego_iniciado
         if juego_iniciado==True: #Verifica que el juego ya haya empezado
-            if x==1:
-                numero_seleccionado=1
-            elif x==2:
-                numero_seleccionado=2
-            elif x==3:
-                numero_seleccionado=3
-            elif x==4:
-                numero_seleccionado=4
-            elif x==5:
-                numero_seleccionado=5
-            elif x==6:
-                numero_seleccionado=6
-            elif x==7:
-                numero_seleccionado=7
-            elif x==8:
-                numero_seleccionado=8
-            elif x==9:
-                numero_seleccionado=9
+            numero_seleccionado=x
             num_seleccionado.set(numero_seleccionado)
         else: #Si no ha empezado, envía esta señal
             messagebox.showinfo("AVISO", "No se ha iniciado la partida\nHaz click en el botón 'Iniciar Juego'")
@@ -941,6 +924,56 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
                 a_jugar()
         else:
             messagebox.showinfo("AVISO", "No se ha iniciado la partida\nHaz click en el botón 'Iniciar Juego'")
+
+    combi=StringVar()
+    num_casillas=StringVar()
+    def ayuda_jugadas():
+    	ayuda=Toplevel()
+    	ayuda.title("Ayuda de jugadas")
+    	ayuda.geometry("400x480+850+50")
+    	ayuda.config(relief="ridge", bg="green", bd="10")
+    	ayuda.resizable(0,0)
+
+    	Label(ayuda, font=("Gang of Three", 20), fg="white", bg="green", text="Ayuda de jugadas").pack()
+    	Label(ayuda, font=("Gang of Three", 15), fg="white", bg="green", text="Ingrese un número:").place(x=10,y=50)
+    	numero_ayuda=Entry(ayuda, font=("Gang of Three", 15), fg="green", bg="white", width="5", textvariable=combi)
+    	numero_ayuda.place(x=230,y=52)
+
+    	numero_de_casillas=Entry(ayuda, font=("Gang of Three", 15), fg="green", bg="white", width="5", textvariable=num_casillas)
+    	numero_de_casillas.place(x=230,y=100)
+
+    	ok=Button(ayuda, font=("Gang of Three", 15), fg="green", bg="white", text="OK!", command=lambda: combinacion_numeros())
+    	ok.place(x=310,y=65)
+
+    def combinacion_numeros():
+        num=combi.get()
+        casillas=num_casillas.get()
+        if casillas!="" and num!="":
+            if num.isdigit()==True and casillas.isdigit()==True:
+                num=int(num)
+                casillas=int(casillas)
+                if num>=3 and casillas>=3:
+                    combinacion_numeros_aux(num, casillas)
+                else:
+                    messagebox.showinfo("AVISO","El numero y las casillas deben ser mayores o iguales a 3")
+            else:
+                messagebox.showinfo("AVISO","Tienes que ingresar números en los dos espacios en blanco")
+        elif casillas!="" and num=="":
+            messagebox.showinfo("AVISO","Tienes que ingresar un número para conocer la combinación")
+        elif casillas=="" and num!="":
+            messagebox.showinfo("AVISO","Tienes que ingresar un número de casillas disponibles para la combinación")
+        else:
+            messagebox.showinfo("AVISO","Tienes que ingresar un número de casillas disponibles para la combinación y un número a combinar")
+            
+    def combinacion_numeros_aux(num, casillas, cont=0):
+    	if cont>num:
+    		return []
+    	else:
+    		return
+
+
+
+
     #Parte gráfica    
     #Numeros
     numero1=Button(juego, width="8", height="2", text="1", fg="black", bg="red", font=('Bahnschrift SemiBold', 10), command=lambda: numero_selec(1))
@@ -998,6 +1031,10 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
     #Top 10
     top10=Button(juego, width="8", height="2", text="Top\n10", fg="black", bg="white", font=('Bahnschrift SemiBold', 10), command=lambda: top_10())
     top10.grid(row=12, column=9)
+
+    #Ayuda jugadas
+    ayuda_jugada=Button(juego, width="8", height="2", text="Ayuda\nJugadas", fg="white", bg="black", font=('Bahnschrift SemiBold', 10), command=lambda: ayuda_jugadas())
+    ayuda_jugada.grid(row=12, column=12)
 
     #Tiempo
     Label(juego, width="7", fg="black", bg="light grey", font=('Bahnschrift SemiBold', 10), text="Tiempo").grid(row=13, column=1, columnspan=3)
