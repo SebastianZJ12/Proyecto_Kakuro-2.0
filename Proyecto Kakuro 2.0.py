@@ -64,14 +64,18 @@ def configuracion(): #Función que despliega el menú para configurar la partida
         global multinivel
         if neurona==1:
             neurona+=1
+            multinivel=False
         elif neurona==2:
             neurona+=1
+            multinivel=False
         elif neurona==3:
             neurona+=1
+            multinivel=True
             nivel.set("Multinivel")
             return
         else:
             neurona=1
+            multinivel=False
         nivel.set(str(neurona)+" Neuronas")
 
     def activar_temporizador(): #Función que activa el temporizador.
@@ -418,7 +422,7 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
     """Funcion para deplegar el tablero de juego"""
     juego=Toplevel()
     juego.title("Kakuro")
-    juego.geometry("850x750+10+10")
+    juego.geometry("850x750+400+10")
     juego.config(relief="ridge", bg="light grey", bd=10)
     juego.resizable(0,0)
     kakuro=[[0,0,0,0,0,0,0,0,0], #Matriz que contiene todos los datos del tablero de juego
@@ -483,7 +487,7 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
                             clave2+=str(i)
                     clave=str(clave)+clave2
                 else:
-                    clave=str(clave)+"\#"                
+                    clave=str(clave)+"\\#"                
                 kakuro[fila-1][columna-1]=clave
                 clave2=""
                 for x in clave:
@@ -538,6 +542,7 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
         return contenido2
 
     #Variables que reinician la partida cada vez que se inicia desde 0
+    global multinivel
     global contenido
     global nombre
     global nombre_jugador
@@ -546,8 +551,9 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
     global juego_iniciado
     numero_seleccionado=""
     num_seleccionado.set(numero_seleccionado)
-    nombre=""
-    nombre_jugador.set(nombre)
+    if multinivel==False:
+        nombre=""
+        nombre_jugador.set(nombre)
     contenido=crear_tablero(contenido2)
     juego_iniciado=False
     
@@ -557,24 +563,7 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
         global num_seleccionado
         global juego_iniciado
         if juego_iniciado==True: #Verifica que el juego ya haya empezado
-            if x==1:
-                numero_seleccionado=1
-            elif x==2:
-                numero_seleccionado=2
-            elif x==3:
-                numero_seleccionado=3
-            elif x==4:
-                numero_seleccionado=4
-            elif x==5:
-                numero_seleccionado=5
-            elif x==6:
-                numero_seleccionado=6
-            elif x==7:
-                numero_seleccionado=7
-            elif x==8:
-                numero_seleccionado=8
-            elif x==9:
-                numero_seleccionado=9
+            numero_seleccionado=x
             num_seleccionado.set(numero_seleccionado)
         else: #Si no ha empezado, envía esta señal
             messagebox.showinfo("AVISO", "No se ha iniciado la partida\nHaz click en el botón 'Iniciar Juego'")
@@ -588,6 +577,7 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
         global terminado
         global nombre
         global ultima_jugada
+        global multinivel
         if numero_seleccionado!="": #Verifica que se haya seleccionado un número
             esta=False
             bandera=True
@@ -763,12 +753,29 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
                             else:
                                 break              
                         if bandera3==True and bandera4==True and bandera5==True: #Aqui verifica que todas las banderas estén correctamente
-                            terminado=True #Aqui indica que ya terminó el tablero correctamente
-                            pygame.mixer.music.load("smb_stage_clear.wav") #Toca la cancioncita de Mario Bros
-                            pygame.mixer.music.play()
-                            aviso="¡FELICIDADES "+str(nombre)+"!, COMPLETASTE CORRECTAMENTE EL KAKURO"
-                            messagebox.showinfo("AVISO", aviso) #Envia el mensaje que se completó correctamente el tablero
-                            escribir_top10()
+                            if multinivel==True:
+                                global neurona
+                                if neurona==1:
+                                    neurona=2
+                                    a_jugar()
+                                elif neurona==2:
+                                    neurona=3
+                                    a_jugar()
+                                else:
+                                    neurona=1
+                                    multinivel=False
+                                    terminado=True #Aqui indica que ya terminó el tablero correctamente
+                                    pygame.mixer.music.load("smb_stage_clear.wav") #Toca la cancioncita de Mario Bros
+                                    pygame.mixer.music.play()
+                                    aviso="¡FELICIDADES "+str(nombre)+"!, COMPLETASTE CORRECTAMENTE EL KAKURO"
+                                    messagebox.showinfo("AVISO", aviso) #Envia el mensaje que se completó correctamente el tablero
+                            else:
+                                terminado=True #Aqui indica que ya terminó el tablero correctamente
+                                pygame.mixer.music.load("smb_stage_clear.wav") #Toca la cancioncita de Mario Bros
+                                pygame.mixer.music.play()
+                                aviso="¡FELICIDADES "+str(nombre)+"!, COMPLETASTE CORRECTAMENTE EL KAKURO"
+                                messagebox.showinfo("AVISO", aviso) #Envia el mensaje que se completó correctamente el tablero
+                                escribir_top10()
         else:
             messagebox.showinfo("AVISO", "¡No has seleccionado un número!")
 
@@ -923,7 +930,8 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
                     while jugadas!=[]:
                         pygame.mixer.music.load("smb_kick.wav")
                         pygame.mixer.music.play()
-                        fila_matriz,columna_matriz=jugadas[-1]
+                        fila_matriz=jugadas[-1][0]
+                        columna_matriz=jugadas[-1][1]
                         lista_botones[fila_matriz][columna_matriz].configure(text="")
                         kakuro[fila_matriz][columna_matriz]="#"
                         lista_botones2=lista_botones[:]
