@@ -28,7 +28,7 @@ def acerca_de(): #Funcion para desplegar el cuadro de "Acerca de".
     messagebox.showinfo("Acerca de:", "Proyecto no.2\nKakuro\nVersion Python 3.6.4\nFecha de creación:01-05-2018\nAutor: Sebastián Zamora Jiménez")
 
 def ayuda(): #Funcion para desplegar el Manual de Usuario.
-    os.startfile('Manual_de_Usuario_Kakuro 2018170723.pdf')
+    os.startfile('Manual_de_Usuario_Kakuro 2.0 2018170723.pdf')
 
 #Variables de la configuración.
 neurona=1 #Variable que indica el nivel de dificultad.
@@ -549,14 +549,18 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
     global numero_seleccionado
     global num_seleccionado
     global juego_iniciado
+    global neurona
     numero_seleccionado=""
     num_seleccionado.set(numero_seleccionado)
     if multinivel==False:
         nombre=""
         nombre_jugador.set(nombre)
+    if multinivel==True:
+        if neurona!=1:
+            iniciar_partida()
+        Label(juego, text="Multinivel", width="8", height="2", bg="light grey", font=('Bahnschrift SemiBold', 15), fg="black").grid(row=0,column=12)
     contenido=crear_tablero(contenido2)
     juego_iniciado=False
-    
     def numero_selec(x): #Función que selecciona el número para ingresarlo a la casilla
         """Función que selecciona el número para ingresarlo a la casilla"""
         global numero_seleccionado
@@ -683,13 +687,15 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
                             if suma_columna>tupla3[0]:
                                 messagebox.showinfo("AVISO", "La sumatoria es mayor a la clave de columna")
                                 suma=False
-                                break                
+                                break            
                 if suma==True: #Bandera que indica si la suma era menor o igual al valor de la clave
                     jugadas+=[[i,j,numero_seleccionado]] #Agrega la ubicación de la casilla a las jugadas
                     lista_botones[i][j].configure(text=str(numero_seleccionado)) #Cambia el valor del botón
                     kakuro[i][j]=numero_seleccionado #Ingresa el número a la matriz del kakuro
                     kakuro2=kakuro[:] 
                     lista_botones2=lista_botones[:]
+                    pygame.mixer.music.load("mario-bros-yes.mp3")
+                    pygame.mixer.music.play()
                     for fila in range(0,9): #Revisa si ya se completó el kakuro
                         for columna in range(0,9):
                             if kakuro[fila][columna]=="#":
@@ -1021,6 +1027,8 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
                     tiempo_jugado=contador
                 if terminado==False and juego_inciado==True: #Si no ha completado el juego al 100%, envía una alerta
                     messagebox.showinfo("Run out of time","Se ha acabado el tiempo :(")
+                    pygame.mixer.music.load("mario-bros game over.mp3")
+                    pygame.mixer.music.play()
                     for fila in range(0,9):
                         for columna in range(0,9): #Desahibilita todos los botones para que el usuario no pueda seguir jugando
                             if type(lista_botones[fila][columna])==Button:
@@ -1134,6 +1142,7 @@ def a_jugar(): #Funcion para deplegar el tablero de juego.
                         texto=str(kakuro3[fila][columna])
                         lista_botones[fila][columna]=Button(juego, width="6", height="2",command=lambda i=i, j=j: kakuro_juego(i,j), text=texto, font=('Bahnschrift SemiBold', 10), state="disabled")
                         lista_botones[fila][columna].grid(row=i+1, column=j+1)
+        messagebox.showinfo("AVISO", "Se cargó correctamente la partida")
         partida.close()
         
     def terminar_de_jugar(): #Función que finaliza el juego cuando el usuario lo desee
