@@ -7,7 +7,6 @@ import random
 import threading
 import time
 import pygame
-import webbrowser
 import os
 
 pygame.mixer.init()
@@ -25,7 +24,7 @@ def salir(): #Funcion para cerrar el menú.
 
 def acerca_de(): #Funcion para desplegar el cuadro de "Acerca de".
     """Funcion para desplegar el cuadro de 'Acerca de'"""
-    messagebox.showinfo("Acerca de:", "Proyecto no.2\nKakuro\nVersion Python 3.6.4\nFecha de creación:01-05-2018\nAutor: Sebastián Zamora Jiménez")
+    messagebox.showinfo("Acerca de:", "Proyecto no.2\nKakuro 2.0\nVersion Python 3.6.4\nFecha de creación:26-05-2018\nAutor: Sebastián Zamora Jiménez")
 
 def ayuda(): #Funcion para desplegar el Manual de Usuario.
     os.startfile('Manual_de_Usuario_Kakuro 2.0 2018170723.pdf')
